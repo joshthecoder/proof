@@ -6,8 +6,6 @@
 */
 import proof/Reporter
 
-testPassed: Bool = true
-
 
 /**
     Add a test case to the suite.
@@ -16,9 +14,9 @@ testPassed: Bool = true
     :param test: the function that performs the actual testing
 */
 test: func(name: String, test: Func) {
-    Reporter current testStarted(name)
+    Reporter instance testStarted(name)
     test()
-    Reporter current testCompleted(testPassed)
+    Reporter instance testCompleted()
 }
 
 /**
@@ -26,6 +24,9 @@ test: func(name: String, test: Func) {
 
     :param condition: the condition to verify as true
 */
+assert: func ~withMessage(condition: Bool, errorMsg: String) {
+    if(condition == false) Reporter instance assertFailed(errorMsg)
+}
 assert: func(condition: Bool) {
-    testPassed = condition
+    assert(condition, "")
 }

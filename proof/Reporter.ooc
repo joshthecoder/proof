@@ -2,33 +2,37 @@ import os/Terminal
 
 
 Reporter: abstract class {
-    current: static This = ConsoleReporter new() as This
+    instance: static This = ConsoleReporter new() as This
 
     testStarted: abstract func(name: String)
-    testCompleted: abstract func(passed: Bool)
+    testCompleted: abstract func
+
+    assertFailed: abstract func(errorMsg: String)
 
     suiteFinished: abstract func 
 }
 
 // Register an at exit callback to invoke the Reporter suiteFinished()
 atexit: extern func(...) -> Int
-atexit(func { Reporter current suiteFinished() })
+atexit(func { Reporter instance suiteFinished() })
 
 ConsoleReporter: class extends Reporter {
     passes, failures: Int
+    currentTestPassed: Bool
 
     init: func {
         passes = 0; failures = 0
     }
 
     testStarted: func(name: String) {
+        currentTestPassed = true
         "%s: Running..." format(name) print()
     }
 
-    testCompleted: func(passed: Bool) {
+    testCompleted: func {
         "\b" times(10) print()
 
-        if(passed) {
+        if(currentTestPassed) {
             passes += 1
 
             Terminal setFgColor(Color green)
@@ -42,6 +46,10 @@ ConsoleReporter: class extends Reporter {
             "[Failed]  " println()
             Terminal reset()
         }
+    }
+
+    assertFailed: func(errorMsg: String) {
+        currentTestPassed = false
     }
 
     suiteFinished: func {
