@@ -1,5 +1,5 @@
+use proof
 import proof
-
 
 test("1 + 4 = 5", func {
     sum := 1 + 4
