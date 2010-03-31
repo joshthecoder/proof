@@ -1,4 +1,5 @@
 import os/Terminal
+import structs/LinkedList
 
 
 Reporter: abstract class {
@@ -18,10 +19,12 @@ atexit(func { Reporter instance suiteFinished() })
 
 ConsoleReporter: class extends Reporter {
     passes, failures: Int
+    failedAsserts: LinkedList<String>
     currentTestPassed: Bool
 
     init: func {
         passes = 0; failures = 0
+        failedAsserts = LinkedList<String> new()
     }
 
     testStarted: func(name: String) {
@@ -45,11 +48,18 @@ ConsoleReporter: class extends Reporter {
             Terminal setFgColor(Color red)
             "[Failed]  " println()
             Terminal reset()
+
+            // Print out any failed assert messages
+            for(msg: String in failedAsserts) {
+                "    - %s" format(msg) println()
+            }
+            failedAsserts clear()
         }
     }
 
     assertFailed: func(errorMsg: String) {
         currentTestPassed = false
+        failedAsserts add(errorMsg)
     }
 
     suiteFinished: func {
