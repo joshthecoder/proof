@@ -14,7 +14,7 @@ Reporter: abstract class {
 }
 
 // Register an at exit callback to invoke the Reporter suiteFinished()
-atexit: extern func(...) -> Int
+atexit: extern func(Func) -> Int
 atexit(func { Reporter instance suiteFinished() })
 
 ConsoleReporter: class extends Reporter {

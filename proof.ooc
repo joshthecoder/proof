@@ -1,4 +1,4 @@
-/**
+/*
     Proof - unit testing framework for ooc
 
     Copyright 2010 Joshua Roesslein
